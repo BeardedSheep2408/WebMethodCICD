@@ -38,9 +38,9 @@ jobs:
 
       - name: Install snap, docker, kubectl, helm & aws
         run: |
-           echo ${{ env.DEV_AWS_ACCOUNT_ID }}
-           echo ${{ env.DEV_AWS_ECR_REPOSITORY }}
-           echo ${{ env.DEV_AWS_REGION }}
+           echo ${{ env.AWS_ACCOUNT_ID }}
+           echo ${{ env.AWS_ECR_REPOSITORY }}
+           echo ${{ env.AWS_REGION }}
            sudo apt install snapd
            snap version
 
