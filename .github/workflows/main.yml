@@ -48,10 +48,21 @@ jobs:
           kustomize-version: 5.0.1
       - run: |
           kustomize version
-
-          echo $(kustomize build .)
-
           kustomize build . > generated/manifests.yaml
+      
+      - name: Set up Kubeconform
+        id: setup-kubeconform
+        uses: bmuschko/setup-kubeconform@v1
+        with:
+            kubeconform-version: '0.6.1'
+    
+      - name: Print Kubeconform installation path
+        env:
+          KUBECONFORM_INSTALLATION_PATH: ${{ steps.setup-kubeconform.outputs.installation-path }}
+        run: |
+            echo "Kubeconform installed..."
+            echo "Installation path: ${KUBECONFORM_INSTALLATION_PATH}"
+        shell: bash
 
 #       - name: Validate yaml
 #         run: kubeconform -summary -skip CustomResourceDefinition generated/
