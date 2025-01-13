@@ -1,0 +1,32 @@
+
+      - name: Login into aws
+        run: |
+          echo "AWS_ACCOUNT_ID=390147970762"
+
+      - name: Clean local repo
+        run: |
+          rm -rf generated/
+          mkdir generated
+          rm -rf deployed/
+          mkdir deployed
+
+      - name: Generate configuration
+        run: kustomize build . > generated/manifests.yaml
+
+      - name: Validate yaml
+        run: kubeconform -summary -skip CustomResourceDefinition generated/
+
+      - name: Get Diff
+        run: |
+          flux pull artifact oci://${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.AWS_ECR_REPOSITORY }}:latest \
+            --output deployed \
+            --provider aws
+          colordiff -u deployed/manifests.yaml generated/manifests.yaml
+
+      - name: Push Artifact
+        run: |
+          flux push artifact oci://${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.AWS_ECR_REPOSITORY }}:latest \
+            --path="./generated/" \
+            --source="$(git config --get remote.origin.url)" \
+            --revision="$(git tag --points-at HEAD)@sha1:$(git rev-parse HEAD)" \
+            --provider aws
