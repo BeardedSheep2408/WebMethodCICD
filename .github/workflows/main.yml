@@ -30,7 +30,7 @@ jobs:
            sudo apt install snapd
            snap version
            sudo snap install aws-cli --classic
- 
+            
            echo "\n==============================="
            echo "SNAP & AWS CLI INSTALLED"
            echo "===============================\n"
@@ -45,7 +45,8 @@ jobs:
            echo "HELM INSTALLED"
            echo "===============================\n"
 
-           helm install -n flux-system --create-namespace flux oci://ghcr.io/fluxcd-community/charts/flux2
+           curl -s https://fluxcd.io/install.sh | sudo bash
+           flux install
 
            echo "\n==============================="
            echo "FLUXCD INSTALLED"
