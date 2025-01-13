@@ -42,12 +42,15 @@ jobs:
           rm -rf deployed/
           mkdir deployed
 
-      - name: Install kustomize
+      - name: Install and run kustomize
         uses: syntaqx/setup-kustomize@v1
         with:
           kustomize-version: 5.0.1
       - run: |
           kustomize version
+
+          echo $(kustomize build .)
+
           kustomize build . > generated/manifests.yaml
 
 #       - name: Validate yaml
