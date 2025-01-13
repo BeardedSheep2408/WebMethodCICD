@@ -25,8 +25,48 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      - name: Install aws CLI
+      - name: Install snap & aws
         run: |
           sudo apt install snapd
           snap version
           sudo snap install aws-cli --classic
+
+          echo "==============================="
+          echo "SNAP & AWS CLI INSTALLED"
+          echo "==============================="
+
+      - name: Clean local repo
+        run: |
+          rm -rf generated/
+          mkdir generated
+          rm -rf deployed/
+          mkdir deployed
+
+      - name: Generate configuration with kustomize
+        uses: karancode/kustomize-github-action@master
+        with:
+          kustomize_version: '3.0.0'
+          kustomize_build_dir: '.'
+          kustomize_comment: true
+          kustomize_output_file: "generated/manifests.yaml"
+          kustomize_build_options: "--load_restrictor none"
+          enable_alpha_plugins: true
+  
+#       - name: Validate yaml
+#         run: kubeconform -summary -skip CustomResourceDefinition generated/
+#   
+#       - name: Get Diff
+#         run: |
+#           flux pull artifact oci://$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$AWS_ECR_REPOSITORY:latest \
+#             --output deployed \
+#             --provider aws
+#           colordiff -u deployed/manifests.yaml generated/manifests.yaml
+#   
+#       - name: Push Artifact
+#         run: |
+#           flux push artifact oci://$AWS_ACCOUNT_ID.dkr.ecr.$env.AWS_REGION.amazonaws.com/$env.AWS_ECR_REPOSITORY:latest \
+#            --path="./generated/" \
+#             --source="$(git config --get remote.origin.url)" \
+#             --revision="$(git tag --points-at HEAD)@sha1:$(git rev-parse HEAD)" \
+#             --provider aws
+  
