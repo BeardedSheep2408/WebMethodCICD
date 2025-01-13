@@ -25,6 +25,11 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
+      - uses: azure/setup-kubectl@v4
+        with:
+          version: '<version>' # default is latest stable
+        id: install
+
       - name: Install snap & aws
         run: |
            sudo apt install snapd
