@@ -27,6 +27,6 @@ jobs:
 
       - name: Install aws CLI
         run: |
-          apt install snapd
+          sudo apt install snapd
           snap version
-          snap install aws-cli --classic
+          sudo snap install aws-cli --classic
