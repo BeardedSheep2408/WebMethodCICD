@@ -46,18 +46,10 @@ jobs:
         uses: syntaqx/setup-kustomize@v1
         with:
           kustomize-version: 5.0.1
-      - run: kustomize version
-        
-      - name: Generate configuration with kustomize
-        uses: karancode/kustomize-github-action@master
-        with:
-          kustomize_version: '5.0.1'
-          kustomize_build_dir: '.'
-          kustomize_comment: true
-          kustomize_output_file: "generated/manifests.yaml"
-          kustomize_build_options: "--load_restrictor none"
-          enable_alpha_plugins: true
-  
+      - run: |
+          kustomize version
+          kustomize build . > generated/manifests.yaml
+
 #       - name: Validate yaml
 #         run: kubeconform -summary -skip CustomResourceDefinition generated/
 #   
