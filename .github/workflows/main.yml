@@ -33,7 +33,7 @@ jobs:
  
            echo "==============================="
            echo "SNAP & AWS CLI INSTALLED"
-           echo "===============================
+           echo "==============================="
            
             curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
             sudo apt-get install apt-transport-https --yes
