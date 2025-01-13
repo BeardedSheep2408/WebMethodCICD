@@ -25,7 +25,18 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      - name: Install snap, kubectl, helm, flux & aws
+      - name: Setup Flux CLI
+        uses: fluxcd/flux2/action@main
+        with:
+             # Flux CLI version e.g. 2.0.0.
+             # Defaults to latest stable release.
+             version: 'latest'
+         
+             # Alternative download location for the Flux CLI binary.
+             # Defaults to path relative to $RUNNER_TOOL_CACHE.
+             bindir: ''
+
+      - name: Install snap, docker, kubectl, helm & aws
         run: |
            sudo apt install snapd
            snap version
@@ -69,17 +80,7 @@ jobs:
            echo "==============================="
            echo "HELM INSTALLED"
            echo "==============================="
-
-           helm install -n flux-system --create-namespace flux oci://ghcr.io/fluxcd-community/charts/flux2
-
-           echo "==============================="
-           echo "FLUXCD INSTALLED"
-           echo "==============================="
            
-           
-           
-           
-
       - name: Install kustomize
         uses: syntaqx/setup-kustomize@v1
         with:
