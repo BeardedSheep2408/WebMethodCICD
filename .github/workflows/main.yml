@@ -25,12 +25,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      - name: Install snap & aws
+      - name: Install snap, kubectl, helm, flux & aws
         run: |
            sudo apt install snapd
            snap version
 
-           snap install kubectl --classic
+           sudo snap install kubectl --classic
            kubectl version --client
 
            echo "==============================="
