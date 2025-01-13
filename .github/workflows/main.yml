@@ -31,9 +31,9 @@ jobs:
            snap version
            sudo snap install aws-cli --classic
             
-           echo "\n==============================="
+           echo "==============================="
            echo "SNAP & AWS CLI INSTALLED"
-           echo "===============================\n"
+           echo "==============================="
            
             curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
             sudo apt-get install apt-transport-https --yes
@@ -41,26 +41,19 @@ jobs:
             sudo apt-get update
             sudo apt-get install helm
 
-           echo "\n==============================="
+           echo "==============================="
            echo "HELM INSTALLED"
-           echo "===============================\n"
+           echo "==============================="
 
-           curl -s https://fluxcd.io/install.sh | sudo bash
-           flux install
+           helm install -n flux-system --create-namespace flux oci://ghcr.io/fluxcd-community/charts/flux2
 
-           echo "\n==============================="
+           echo "==============================="
            echo "FLUXCD INSTALLED"
-           echo "===============================\n"           
-
-
-
- 
-      - name: Clean local repo
-        run: |
-          rm -rf generated/
-          mkdir generated
-          rm -rf deployed/
-          mkdir deployed
+           echo "==============================="
+           
+           
+           
+           
 
       - name: Install kustomize
         uses: syntaqx/setup-kustomize@v1
@@ -74,6 +67,13 @@ jobs:
         uses: bmuschko/setup-kubeconform@v1
         with:
             kubeconform-version: '0.6.1'
+
+      - name: Clean local repo
+        run: |
+            rm -rf generated/
+            mkdir generated
+            rm -rf deployed/
+            mkdir deployed
 
       - name: Validation with kustomize and kubeconform 
         run: |
