@@ -107,14 +107,14 @@ jobs:
           kustomize build . > generated/manifests.yaml
           kubeconform -summary -skip CustomResourceDefinition generated/
 
-          - name: Checkout repo
-            uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
     
-          - name: Configure AWS credentials
-            uses: aws-actions/configure-aws-credentials@v4 # More information on this action can be found below in the 'AWS Credentials' section
-            with:
-              role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
-              aws-region: ${{ secrets.AWS_REGION }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4 # More information on this action can be found below in the 'AWS Credentials' section
+        with:
+          role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
         
       - name: Get Diff
         run: |
