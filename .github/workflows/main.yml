@@ -39,9 +39,9 @@ jobs:
 
       - name: Install snap, docker, kubectl, helm & aws
         run: |
-           echo ${{ vars.AWS_ACCOUNT_ID }}
-           echo ${{ vars.AWS_ECR_REPOSITORY }}
-           echo ${{ vars.AWS_REGION }}
+           echo ${{ secrets.AWS_ACCOUNT_ID }}
+           echo ${{ secrets.AWS_ECR_REPOSITORY }}
+           echo ${{ secrets.AWS_REGION }}
            sudo apt install snapd
            snap version
 
@@ -112,11 +112,11 @@ jobs:
 
       - name: Get Diff
         run: |
-          flux pull artifact oci://$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$AWS_ECR_REPOSITORY:latest \
+          flux pull artifact oci://${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}:latest \
            --output deployed \
            --provider aws
           colordiff -u deployed/manifests.yaml generated/manifests.yaml
-   
+
 #       - name: Push Artifact
 #         run: |
 #           flux push artifact oci://$AWS_ACCOUNT_ID.dkr.ecr.$env.AWS_REGION.amazonaws.com/$env.AWS_ECR_REPOSITORY:latest \
