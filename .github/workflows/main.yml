@@ -30,6 +30,23 @@ jobs:
            sudo apt install snapd
            snap version
 
+            sudo apt-get update
+            sudo apt-get install ca-certificates curl
+            sudo install -m 0755 -d /etc/apt/keyrings
+            sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+            sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+            echo \
+              "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+              $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+              sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+            sudo apt-get update
+
+           echo "==============================="
+           echo "DOCKER INSTALLED"
+           echo "==============================="
+
+
            sudo snap install kubectl --classic
            kubectl version --client
 
@@ -42,8 +59,18 @@ jobs:
            echo "==============================="
            echo "AWS CLI INSTALLED"
            echo "==============================="
+           
+            curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+            sudo apt-get install apt-transport-https --yes
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+            sudo apt-get update
+            sudo apt-get install helm
 
-           kubectl apply -f https://github.com/fluxcd/flux2/releases/latest/download/install.yaml
+           echo "==============================="
+           echo "HELM INSTALLED"
+           echo "==============================="
+
+           helm install -n flux-system --create-namespace flux oci://ghcr.io/fluxcd-community/charts/flux2
 
            echo "==============================="
            echo "FLUXCD INSTALLED"
