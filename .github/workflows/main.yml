@@ -27,18 +27,20 @@ jobs:
 
       - name: Install snap & aws
         run: |
-           sudo apt-get update && sudo apt-get install -y apt-transport-https
-           curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-           echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
-           sudo apt-get update
-           sudo apt-get install -y kubectl
-
            sudo apt install snapd
            snap version
+
+           snap install kubectl --classic
+           kubectl version --client
+
+           echo "==============================="
+           echo "KUBECTL INSTALLED"
+           echo "==============================="
+
            sudo snap install aws-cli --classic
             
            echo "==============================="
-           echo "SNAP & AWS CLI INSTALLED"
+           echo "AWS CLI INSTALLED"
            echo "==============================="
            
             curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
