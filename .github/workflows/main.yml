@@ -58,21 +58,15 @@ jobs:
       - name: Validation with kustomize and kubeconform 
         run: |
           kustomize build . > generated/manifests.yaml
-
-          echo $(kustomize build .)
-
           kubeconform -summary -skip CustomResourceDefinition generated/
 
-          echo $(kustomize build .)
-          echo $(kubeconform -summary -skip CustomResourceDefinition)
-#   
-#       - name: Get Diff
-#         run: |
-#           flux pull artifact oci://$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$AWS_ECR_REPOSITORY:latest \
-#             --output deployed \
-#             --provider aws
-#           colordiff -u deployed/manifests.yaml generated/manifests.yaml
-#   
+      - name: Get Diff
+        run: |
+          flux pull artifact oci://$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$AWS_ECR_REPOSITORY:latest \
+           --output deployed \
+           --provider aws
+          colordiff -u deployed/manifests.yaml generated/manifests.yaml
+   
 #       - name: Push Artifact
 #         run: |
 #           flux push artifact oci://$AWS_ACCOUNT_ID.dkr.ecr.$env.AWS_REGION.amazonaws.com/$env.AWS_ECR_REPOSITORY:latest \
