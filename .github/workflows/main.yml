@@ -25,16 +25,16 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      - name: Install snap & aws
-        run: |
-          sudo apt install snapd
-          snap version
-          sudo snap install aws-cli --classic
-
-          echo "==============================="
-          echo "SNAP & AWS CLI INSTALLED"
-          echo "==============================="
-
+#       - name: Install snap & aws
+#         run: |
+#           sudo apt install snapd
+#           snap version
+#           sudo snap install aws-cli --classic
+# 
+#           echo "==============================="
+#           echo "SNAP & AWS CLI INSTALLED"
+#           echo "==============================="
+# 
       - name: Clean local repo
         run: |
           rm -rf generated/
@@ -42,6 +42,12 @@ jobs:
           rm -rf deployed/
           mkdir deployed
 
+      - name: Install kustomize
+        uses: syntaqx/setup-kustomize@v1
+        with:
+          kustomize-version: 5.0.1
+      - run: kustomize version
+        
       - name: Generate configuration with kustomize
         uses: karancode/kustomize-github-action@master
         with:
