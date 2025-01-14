@@ -39,53 +39,53 @@ jobs:
 
       - name: Install snap, docker, kubectl, helm & aws
         run: |
-           sudo apt install snapd
-           snap version
+          sudo apt install snapd
+          snap version
 
-            sudo apt-get update
-            sudo apt-get install ca-certificates curl
-            sudo install -m 0755 -d /etc/apt/keyrings
-            sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-            sudo chmod a+r /etc/apt/keyrings/docker.asc
+          # sudo apt-get update
+          # sudo apt-get install ca-certificates curl
+          # sudo install -m 0755 -d /etc/apt/keyrings
+          # sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+          # sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-            echo \
-              "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-              $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-              sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-            sudo apt-get update
+          # echo \
+          #   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+          #   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+          #   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+          # sudo apt-get update
 
-           echo "==============================="
-           echo "DOCKER INSTALLED"
-           echo "==============================="
+          # echo "==============================="
+          # echo "DOCKER INSTALLED"
+          # echo "==============================="
 
 
-           sudo snap install kubectl --classic
-           kubectl version --client
+          sudo snap install kubectl --classic
+          kubectl version --client
 
-           echo "==============================="
-           echo "KUBECTL INSTALLED"
-           echo "==============================="
+          echo "==============================="
+          echo "KUBECTL INSTALLED"
+          echo "==============================="
 
-           sudo snap install aws-cli --classic
-            
-           echo "==============================="
-           echo "AWS CLI INSTALLED"
-           echo "==============================="
-           
-            curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
-            sudo apt-get install apt-transport-https --yes
-            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
-            sudo apt-get update
-            sudo apt-get install helm
+          sudo snap install aws-cli --classic
+          
+          echo "==============================="
+          echo "AWS CLI INSTALLED"
+          echo "==============================="
+          
+          curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+          sudo apt-get install apt-transport-https --yes
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+          sudo apt-get update
+          sudo apt-get install helm
 
-           echo "==============================="
-           echo "HELM INSTALLED"
-           echo "==============================="
+          echo "==============================="
+          echo "HELM INSTALLED"
+          echo "==============================="
            
       - name: Install kustomize
         uses: syntaqx/setup-kustomize@v1
         with:
-          kustomize-version: 5.0.1
+          kustomize-version: 5.5.0
       - run: |
           kustomize version
 
@@ -93,7 +93,7 @@ jobs:
         id: setup-kubeconform
         uses: bmuschko/setup-kubeconform@v1
         with:
-            kubeconform-version: '0.6.1'
+            kubeconform-version: '0.6.7'
 
       - name: Clean local repo
         run: |
@@ -110,11 +110,11 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
     
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4 # More information on this action can be found below in the 'AWS Credentials' section
-        with:
-          role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
-          aws-region: ${{ secrets.AWS_REGION }}
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v4 # More information on this action can be found below in the 'AWS Credentials' section
+      #   with:
+      #     role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
+      #     aws-region: ${{ secrets.AWS_REGION }}
         
       - name: Get Diff
         run: |
