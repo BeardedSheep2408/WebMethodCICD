@@ -124,7 +124,8 @@ jobs:
           flux pull artifact oci://${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}:latest \
            --output deployed \
            --provider aws
-          colordiff -u deployed/manifest.yaml generated/manifests.yaml
+          colordiff -u deployed/manifest.yaml generated/manifests.yaml || true
+        
 
 #       - name: Push Artifact
 #         run: |
