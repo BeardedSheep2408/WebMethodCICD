@@ -10,12 +10,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: 855050627900.dkr.ecr.eu-west-1.amazonaws.com/test/engie:latest
     environment: DEV
 
     steps:
       
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Docker container
+        run: docker run ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}:latest
+
       - name: Checkout code
         uses: actions/checkout@v4
 
