@@ -20,12 +20,12 @@ RUN apk update && apk upgrade && \
     echo "KUBECONFORM IS INSTALLED" && \
     GOBIN=$(pwd)/ GO111MODULE=on go install sigs.k8s.io/kustomize/kustomize/v5@latest && \
     echo "KUSTOMIZE IS INSTALLED" &&\
-        # Supprimer les fichiers non nécessaires
-        rm -rf /var/cache/apk/* && \
-        rm -f get_helm.sh && \
-        rm -f /usr/local/bin/kubectl && \
-        rm -rf /root/.cache/go-build && \
-        rm -rf /tmp/*
+            # Supprimer les fichiers non nécessaires
+            rm -rf /var/cache/apk/* && \
+            rm -f get_helm.sh && \
+            rm -f /usr/local/bin/kubectl && \
+            rm -rf /root/.cache/go-build && \
+            rm -rf /tmp/*
 
 # Définir le répertoire de travail
 WORKDIR /app

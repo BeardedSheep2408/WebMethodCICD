@@ -11,4 +11,4 @@ fileExistenceTests:
 fileContentTests:
   - name: "Check /etc/os-release content"
     path: "/etc/os-release"
-    expectedContents: ["Alpine Linux"]
+  expectedContents: ["Alpine Linux"]P
