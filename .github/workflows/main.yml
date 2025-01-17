@@ -1,137 +1,45 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    container:
+      image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}:latest
     environment: DEV
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Setup Flux CLI
-        uses: fluxcd/flux2/action@main
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-             # Flux CLI version e.g. 2.0.0.
-             # Defaults to latest stable release.
-             version: '2.4.0'
-         
-             # Alternative download location for the Flux CLI binary.
-             # Defaults to path relative to $RUNNER_TOOL_CACHE.
-             bindir: ''
-
-      - name: Install snap, docker, kubectl, helm & aws
-        run: |
-          sudo apt install snapd
-          snap version
-
-          sudo apt install colordiff
-
-          # sudo apt-get update
-          # sudo apt-get install ca-certificates curl
-          # sudo install -m 0755 -d /etc/apt/keyrings
-          # sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-          # sudo chmod a+r /etc/apt/keyrings/docker.asc
-
-          # echo \
-          #   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-          #   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-          #   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-          # sudo apt-get update
-
-          # echo "==============================="
-          # echo "DOCKER INSTALLED"
-          # echo "==============================="
-
-
-          # sudo snap install kubectl --classic
-          # kubectl version --client
-
-          # echo "==============================="
-          # echo "KUBECTL INSTALLED"
-          # echo "==============================="
-
-          sudo snap install aws-cli --classic
-          
-          echo "==============================="
-          echo "AWS CLI INSTALLED"
-          echo "==============================="
-          
-          # curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
-          # sudo apt-get install apt-transport-https --yes
-          # echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
-          # sudo apt-get update
-          # sudo apt-get install helm
-
-          # echo "==============================="
-          # echo "HELM INSTALLED"
-          # echo "==============================="
-           
-      - name: Install kustomize
-        uses: syntaqx/setup-kustomize@v1
-        with:
-          kustomize-version: 5.5.0
-      - run: |
-          kustomize version
-
-      - name: Installation Kubeconform
-        id: setup-kubeconform
-        uses: bmuschko/setup-kubeconform@v1
-        with:
-            kubeconform-version: '0.6.7'
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Clean local repo
         run: |
-            rm -rf generated/
-            mkdir generated
-            rm -rf deployed/
-            mkdir deployed
+          rm -rf generated/
+          mkdir generated
+          rm -rf deployed/
+          mkdir deployed
 
       - name: Validation with kustomize and kubeconform 
         run: |
           kustomize build . > generated/manifests.yaml
           kubeconform -summary -skip CustomResourceDefinition generated/
     
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v4 # More information on this action can be found below in the 'AWS Credentials' section
-      #   with:
-      #     role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
-      #     aws-region: ${{ secrets.AWS_REGION }}
-        
       - name: Get Diff
         run: |
-
-          export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-          export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
           flux pull artifact oci://${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}:latest \
            --output deployed \
            --provider aws
           colordiff -u deployed/manifest.yaml generated/manifests.yaml || true
-        
-
-#       - name: Push Artifact
-#         run: |
-#           flux push artifact oci://$AWS_ACCOUNT_ID.dkr.ecr.$env.AWS_REGION.amazonaws.com/$env.AWS_ECR_REPOSITORY:latest \
-#            --path="./generated/" \
-#             --source="$(git config --get remote.origin.url)" \
-#             --revision="$(git tag --points-at HEAD)@sha1:$(git rev-parse HEAD)" \
-#             --provider aws
-  
