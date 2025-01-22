@@ -23,11 +23,14 @@ jobs:
         run: |
           export AWS_ARN_ROLE=${{ secrets.AWS_ARN_ROLE }}
           export AWS_REGION=${{ secrets.AWS_REGION }}
+          echo $AWS_ARN_ROLE
+          echo ${AWS_ARN_ROLE}
+          echo AWS_ARN_ROLE
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: $AWS_ARN_ROLE
+          role-to-assume: ${AWS_ARN_ROLE}
           aws-region: eu-west-1
 
   Pipeline_CI_CD:
