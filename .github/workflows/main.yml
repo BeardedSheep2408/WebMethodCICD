@@ -20,8 +20,6 @@ jobs:
       
       - name: Export environment variables
         run: |
-          echo " This is the secret github token "
-          echo ${{ secrets.GH_TOKEN_ADMIN }}
           export AWS_ARN_ROLE=${{ secrets.AWS_ARN_ROLE }}
           export AWS_REGION=${{ secrets.AWS_REGION }}
 
