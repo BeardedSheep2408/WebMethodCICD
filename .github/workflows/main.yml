@@ -22,6 +22,7 @@ jobs:
   Pipeline_CI_CD:
     runs-on: ubuntu-latest
     environment: DEV
+    needs: Checkout_and_AWS_Credentials
 
     steps:
       - uses: actions/checkout@v4
