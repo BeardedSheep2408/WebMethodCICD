@@ -9,10 +9,22 @@ jobs:
   Checkout_and_AWS_Credentials:
     runs-on: ubuntu-latest
     environment: DEV
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN_ADMIN }}
 
     steps:
       - uses: actions/checkout@v4
       
+      - name: Export environment variables
+        run: |
+          echo " This is the secret github token "
+          echo ${{ secrets.GH_TOKEN_ADMIN }}
+          export $AWS_ARN_ROLE = ${{ secrets.AWS_ARN_ROLE }}
+          export $AWS_ARN_REGION = ${{ secrets.AWS_REGION }}
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
