@@ -3,6 +3,7 @@ name: CI
 on:
   push:
     branches: [ "main" ]
+  
   workflow_dispatch:
 
 jobs:
@@ -27,7 +28,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: $AWS_ARN_ROLE
-          aws-region: $AWS_REGION
+          aws-region: eu-west-1
 
   Pipeline_CI_CD:
     runs-on: ubuntu-latest
