@@ -1,68 +1,52 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches: [ "lab" ]
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  Run_in_the_container:
-    # The type of runner that the job will run on
+  Checkout_and_AWS_Credentials:
     runs-on: ubuntu-latest
-    container:
-      image: 855050627900.dkr.ecr.eu-west-1.amazonaws.com/test/engie:latest
-      credentials:
-        username: "AWS"
-        # you can call the secret whatever you like
-        password: "INSEREZ LE MOT DE PASSE ICI"
     environment: DEV
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
+  # Pipeline_CI_CD:
+  #   runs-on: ubuntu-latest
+  #   environment: DEV
 
-#       - name: Clean local repo
-#         run: |
-#             rm -rf generated/
-#             mkdir generated
-#             rm -rf deployed/
-#             mkdir deployed
-#       - name: Validation with kustomize and kubeconform 
-#         run: |
-#           kustomize build . > generated/manifests.yaml
-#           kubeconform -summary -skip CustomResourceDefinition generated/
-    
-#       # - name: Configure AWS credentials
-#       #   uses: aws-actions/configure-aws-credentials@v4 # More information on this action can be found below in the 'AWS Credentials' section
-#       #   with:
-#       #     role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
-#       #     aws-region: ${{ secrets.AWS_REGION }}
-        
+  #   steps:
+  #     - name: Clean local repo
+  #       run: |
+  #         rm -rf generated/
+  #         mkdir generated
+  #         rm -rf deployed/
+  #         mkdir deployed
 
-#       # export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-#       # export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#       - name: Get Diff
-#         run: |
-#           flux pull artifact oci://${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}:latest \
-#            --output deployed \
-#            --provider aws
-#           colordiff -u deployed/manifest.yaml generated/manifests.yaml || true
-        
-# #       - name: Push Artifact
-# #         run: |
-# #           flux push artifact oci://$AWS_ACCOUNT_ID.dkr.ecr.$env.AWS_REGION.amazonaws.com/$env.AWS_ECR_REPOSITORY:latest \
-# #            --path="./generated/" \
-# #             --source="$(git config --get remote.origin.url)" \
-# #             --revision="$(git tag --points-at HEAD)@sha1:$(git rev-parse HEAD)" \
-# #             --provider aws
+  #     - name: Validation with kustomize and kubeconform 
+  #       run: |
+  #         kustomize build . > generated/manifests.yaml
+  #         kubeconform -summary -skip CustomResourceDefinition generated/
+      
+  #     - name: Get Diff
+  #       run: |
+  #         flux pull artifact oci://${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}:latest \
+  #         --output deployed \
+  #         --provider aws
+  #         colordiff -u deployed/manifest.yaml generated/manifests.yaml || true
+      
+  #     - name: Push Artifact
+  #       run: |
+  #         flux push artifact oci://$AWS_ACCOUNT_ID.dkr.ecr.$env.AWS_REGION.amazonaws.com/$env.AWS_ECR_REPOSITORY:latest \
+  #         --path="./generated/" \
+  #         --source="$(git config --get remote.origin.url)" \
+  #         --revision="$(git tag --points-at HEAD)@sha1:$(git rev-parse HEAD)" \
+  #         --provider aws
