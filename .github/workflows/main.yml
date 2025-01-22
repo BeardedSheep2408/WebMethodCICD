@@ -26,8 +26,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: $AWS_ARN_ROLE
+          aws-region: $AWS_REGION
 
   Pipeline_CI_CD:
     runs-on: ubuntu-latest
