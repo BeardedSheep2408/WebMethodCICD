@@ -19,17 +19,19 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-  # Pipeline_CI_CD:
-  #   runs-on: ubuntu-latest
-  #   environment: DEV
+  Pipeline_CI_CD:
+    runs-on: ubuntu-latest
+    environment: DEV
 
-  #   steps:
-  #     - name: Clean local repo
-  #       run: |
-  #         rm -rf generated/
-  #         mkdir generated
-  #         rm -rf deployed/
-  #         mkdir deployed
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Clean local repo
+        run: |
+          rm -rf generated/
+          mkdir generated
+          rm -rf deployed/
+          mkdir deployed
 
   #     - name: Validation with kustomize and kubeconform 
   #       run: |
