@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  Checkout_and_AWS_Credentials:
+  Setup_Checkout_and_AWS_Credentials:
     runs-on: ubuntu-latest
     environment: DEV
     permissions:
@@ -25,11 +25,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-          
+
   Pipeline_CI_CD:
     runs-on: ubuntu-latest
     environment: DEV
-    needs: Checkout_and_AWS_Credentials
+    needs: Setup_Checkout_and_AWS_Credentials
 
     steps:
       - uses: actions/checkout@v4
